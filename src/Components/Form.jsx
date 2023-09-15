@@ -1,15 +1,44 @@
-import React from "react";
+import React, { useState, useReducer } from "react";
+import { reducer } from "./userListReducer";
 
+const initialState = {
+  users: [{
+    message: "Quisiera un turno con el doctor cureta pero no lo veo",
+    email: "pepequiroga@queteimporta.com"
+  }]
+}
 
 const Form = () => {
-  //Aqui deberan implementar el form completo con sus validaciones
 
-  return (
-    <div>
-      <form>
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  const [newUser, setNewUser] = useState({
+    message: '',
+    email: ''
+  })
+  
+  const handleChange = (e) => {
+      setNewUser({
+          ...newUser,
+          [e.target.name]: e.target.value
+      })
+  }
+  const handleSubmit = (e) => {
+      e.preventDefault()
+      dispatch({type: 'ADD_REQUEST', payload: newUser})
+      alert ("sus datos fueron cargados correctamente")
+  }
+return (
+  <div>
+      <form onSubmit={handleSubmit}>
+          <input type="text" name="message" onChange={handleChange}/>
+          <input type="email" name="email" onChange={handleChange}/>
+          <button>Submit</button>
       </form>
-    </div>
-  );
-};
-
+    {state.users.map(user => (
+        <li> mensaje: {user.message} - email: {user.email}</li>
+    ))}
+  </div>
+)
+}
 export default Form;
